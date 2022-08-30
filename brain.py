@@ -1,6 +1,5 @@
 import math
 import random
-
 import vector
 
 class Brain:
@@ -9,8 +8,9 @@ class Brain:
     directions = []
     mutateRate = .01
 
-    def __init__(self, size, directions=[]):
+    def __init__(self, size, mutateRate, directions=[]):
         self.size = size
+        self.mutateRate = mutateRate
         if (directions):
             self.directions = directions.copy()
         else:
@@ -18,7 +18,6 @@ class Brain:
 
     def getRandomStep(self):
         randomAngle = random.randrange(628)/10 #approx 2PI
-        # assume acc radius of 1
         accX = math.sin(randomAngle)
         accY = math.cos(randomAngle)
         return vector.Vector(x=accX, y=accY)
@@ -36,7 +35,7 @@ class Brain:
         return self.step
 
     def clone(self):
-        clonedBrain = Brain(self.size, self.directions.copy())
+        clonedBrain = Brain(self.size, self.mutateRate, self.directions.copy())
         return clonedBrain
 
     def mutate(self):

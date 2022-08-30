@@ -5,20 +5,22 @@ class Dot:
     pos = vector.Vector(x=0,y=0)
     vel = vector.Vector(x=0,y=0)
     acc = vector.Vector(x=0,y=0)
-    dotBrain = brain.Brain(1)
+    dotBrain = brain.Brain(1, .01)
     dotRadius = 2
     limit = 5
     fitness = 0
     bonus = 1
+    mutateRate = .01
     alive = True
     reachedGoal = False
     isBest = False
 
-    def __init__(self, pos, dotBrain=None):
+    def __init__(self, pos, mutateRate, dotBrain=None):
         if dotBrain:
             self.dotBrain = dotBrain
         else:
-            self.dotBrain=brain.Brain(1000)
+            self.dotBrain=brain.Brain(1000, mutateRate)
+        self.mutateRate = mutateRate
         self.pos = pos
         self.vel = vector.Vector(0, 0)
         self.acc = vector.Vector(0, 0)
@@ -83,7 +85,7 @@ class Dot:
 
     def clone(self, pos):
         babyBrain = self.dotBrain.clone()
-        baby = Dot(pos, dotBrain=babyBrain)
+        baby = Dot(pos, self.mutateRate, dotBrain=babyBrain)
         return baby
 
     def mutate(self):

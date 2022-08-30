@@ -11,13 +11,15 @@ class Population:
     allDotsDead = False
     width = 0
     height = 0
+    mutateRate = .01
     myCanvas=None
     arcs=None
 
-    def __init__(self, size, width, height, myCanvas):
+    def __init__(self, size, width, height, mutateRate, myCanvas):
         self.width = width
         self.height = height
-        self.dots = [dot.Dot(vector.Vector(x=self.width/2, y=self.height-10)) for _ in range(size)]
+        self.mutateRate = mutateRate
+        self.dots = [dot.Dot(vector.Vector(x=self.width/2, y=self.height-10), mutateRate) for _ in range(size)]
         self.myCanvas = myCanvas
         self.resetCanvas()
 
@@ -59,14 +61,14 @@ class Population:
         return None
 
     def naturalSelection(self):
-        newDots = [dot.Dot(vector.Vector(x=self.width/2, y=self.height-10)) for _ in range(len(self.dots))]
+        newDots = [dot.Dot(vector.Vector(x=self.width/2, y=self.height-10), self.mutateRate) for _ in range(len(self.dots))]
         self.setBestDot()
         self.calculateFitnessSum()
 
-        newDots[0] = self.dots[self.bestDot].clone(vector.Vector(x=self.width/2, y=self.height-10))
-        newDots[0].setBestDot(True)
+        newDots[len(newDots)-1] = self.dots[self.bestDot].clone(vector.Vector(x=self.width/2, y=self.height-10))
+        newDots[len(newDots)-1].setBestDot(True)
 
-        for index in range(1, len(newDots)):
+        for index in range(0, len(newDots)-1):
             parent = self.selectParent()
             newDots[index] = parent.clone(vector.Vector(x=self.width/2, y=self.height-10))
 
