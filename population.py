@@ -11,16 +11,15 @@ class Population:
     allDotsDead = False
     width = 0
     height = 0
-    # myCanvas=None
-    # arcs=None
+    myCanvas=None
+    arcs=None
 
-    def __init__(self, size, width, height):
+    def __init__(self, size, width, height, myCanvas):
         self.width = width
         self.height = height
         self.dots = [dot.Dot(vector.Vector(x=self.width/2, y=self.height-10)) for _ in range(size)]
-        # self.myCanvas = myCanvas
-        # self.arcs = [self.myCanvas.create_arc(self.getStartCoord(), start=0, extent=359.9, fill="black") for _ in range(size)]
-
+        self.myCanvas = myCanvas
+        self.resetCanvas()
 
     def getStartCoord(self):
         return self.dots[0].getCoord()
@@ -48,7 +47,7 @@ class Population:
                 winnerIndex = index
         self.bestDot = winnerIndex
         self.dots[winnerIndex].setBestDot(True)
-                
+
     def selectParent(self):
         randomFitness = random.uniform(0,self.fitnessSum)
         runningSum = 0
@@ -78,3 +77,12 @@ class Population:
         for dot in self.dots:
             if not dot.isBestDot():
                 dot.mutate()
+
+    def resetCanvas(self):
+        dotColor = lambda dot : 'green' if dot.isBestDot() else 'black'
+        self.arcs = [self.myCanvas.create_arc(self.getStartCoord(), start=0, extent=359.9, fill=dotColor(self.dots[index])) for index in range(len(self.dots))]
+
+    def move(self, dotIndex):
+        self.dots[dotIndex].move()
+        vel = self.dots[dotIndex].getVelocity()
+        self.myCanvas.move(self.arcs[dotIndex], vel.getX(), vel.getY())

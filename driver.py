@@ -1,6 +1,8 @@
 
 import tkinter
 import dot
+from difficulty import Difficulty
+import level
 import population
 import vector
 
@@ -16,9 +18,11 @@ goalY = 10
 goalCoord = goalX-3, goalY+3, goalX+3, goalY-3
 # create canvas
 myCanvas = tkinter.Canvas(root, bg="white", height=500, width=500)
-population = population.Population(dotCount, width, height)
+population = population.Population(dotCount, width, height, myCanvas)
 coord = population.getStartCoord()
+myLevel = level.Level(Difficulty.MEDIUM, myCanvas)
 
+# TODO move to a level object?
 def calculateFitness(dot):
     fitness = 0
     if (dot.getReachedGoal()):
@@ -34,32 +38,28 @@ def calculateFitness(dot):
 
 def resetCanvas():
     myCanvas.delete('all')
-    global allDots
-    allDots = population.getDots()
-    dotColor = lambda dot : 'green' if dot.isBestDot() else 'black'
-    global arcs
-    arcs = [myCanvas.create_arc(coord, start=0, extent=359.9, fill=dotColor(allDots[index])) for index in range(dotCount)]
+    population.resetCanvas()
+    myLevel.resetCanvas()
     goal = myCanvas.create_arc(goalCoord, start=0, extent=359.9, fill="red")
 
 def do_one_frame():
     if population.areAllDotsDead():
         population.naturalSelection()
         population.setAllDotsDead(False)
-        # breaking in here...
         population.mutateGeneration()
         resetCanvas()
     else:
         allDotsDead = True # trust, but verify
+        allDots = population.getDots()
         for dotIndex in range(0, len(allDots)):
             if allDots[dotIndex].isAlive():
                 allDotsDead = False
-                allDots[dotIndex].move()
-                vel = allDots[dotIndex].getVelocity()
-                myCanvas.move(arcs[dotIndex], vel.getX(), vel.getY())
+                population.move(dotIndex)
                 pos = allDots[dotIndex].getPosition()
                 xPos = pos.getX()
                 yPos = pos.getY()
 
+                # TODO handle collisions in level class
                 if (xPos<2 or yPos<2 or xPos>width-2 or yPos>height -2):
                     # dot hits the edge
                     allDots[dotIndex].unalive()
@@ -70,10 +70,10 @@ def do_one_frame():
                     allDots[dotIndex].setReachedGoal(True)
                     allDots[dotIndex].unalive()
                     calculateFitness(allDots[dotIndex])
+                elif (myLevel.checkCollision(allDots[dotIndex])):
                     # kill the dot, but award points
-                # } else if (pos.x< 600 && pos.y < 310 && pos.x > 0 && pos.y > 300) {//if hit obstacle
-                #     dead = true;
-                # }
+                    allDots[dotIndex].unalive()
+                    calculateFitness(allDots[dotIndex])
         if (allDotsDead):
             population.setAllDotsDead(True)
     root.after(50, do_one_frame)

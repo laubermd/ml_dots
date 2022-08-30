@@ -5,20 +5,19 @@ class Dot:
     pos = vector.Vector(x=0,y=0)
     vel = vector.Vector(x=0,y=0)
     acc = vector.Vector(x=0,y=0)
-    dotSize = 4
     dotBrain = brain.Brain(1)
+    dotRadius = 2
     limit = 5
+    fitness = 0
     alive = True
     reachedGoal = False
     isBest = False
-    fitness = 0
 
     def __init__(self, pos, dotBrain=None):
         if dotBrain:
             self.dotBrain = dotBrain
         else:
             self.dotBrain=brain.Brain(1000)
-        # start the dots at the bottom of the window with a no velocity or acceleration
         self.pos = pos
         self.vel = vector.Vector(0, 0)
         self.acc = vector.Vector(0, 0)
@@ -26,10 +25,13 @@ class Dot:
     def getCoord(self):
         x = self.pos.getX()
         y = self.pos.getY()
-        return x-2, y+2, x+2, y-2
+        return x-self.dotRadius, y+self.dotRadius, x+self.dotRadius, y-self.dotRadius
 
     def getPosition(self):
         return self.pos
+
+    def getRadius(self):
+        return self.dotRadius
 
     def getVelocity(self):
         return self.vel
@@ -40,7 +42,6 @@ class Dot:
     def move(self):
         if self.dotBrain.hasSteps():
             step = self.dotBrain.getNextStep()
-            # apply the acceleration and move the dot
             self.acc=step
             self.vel.add(step)
             self.vel.limit(self.limit)

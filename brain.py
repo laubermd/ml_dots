@@ -7,6 +7,7 @@ class Brain:
     step = 0
     size = 0
     directions = []
+    mutateRate = .01
 
     def __init__(self, size, directions=[]):
         self.size = size
@@ -39,8 +40,7 @@ class Brain:
         return clonedBrain
 
     def mutate(self):
-        mutateRate = .01
         for index in range(self.size):
             rand = random.random()
-            if (mutateRate > rand):
+            if (self.mutateRate > rand):
                 self.directions[index] = self.getRandomStep()
