@@ -9,6 +9,7 @@ class Dot:
     dotRadius = 2
     limit = 5
     fitness = 0
+    bonus = 1
     alive = True
     reachedGoal = False
     isBest = False
@@ -61,6 +62,12 @@ class Dot:
 
     def getStepCount(self):
         return self.dotBrain.getStepCount()
+
+    def setBonus(self, bonus):
+        self.bonus = bonus
+
+    def getBonus(self):
+        return self.bonus
 
     def setFitness(self, fitness):
         self.fitness = fitness
