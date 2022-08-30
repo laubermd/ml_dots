@@ -2,18 +2,8 @@ import vector
 import brain
 
 class Dot:
-    pos = vector.Vector(x=0,y=0)
-    vel = vector.Vector(x=0,y=0)
-    acc = vector.Vector(x=0,y=0)
-    dotBrain = brain.Brain(1, .01)
-    dotRadius = 2
-    limit = 5
-    fitness = 0
-    bonus = 1
-    mutateRate = .01
-    alive = True
-    reachedGoal = False
-    isBest = False
+    dotRadius,limit,fitness,bonus = 2,5,0,1
+    alive,reachedGoal,isBest = True,False,False
 
     def __init__(self, pos, mutateRate, dotBrain=None):
         if dotBrain:
@@ -21,9 +11,7 @@ class Dot:
         else:
             self.dotBrain=brain.Brain(1000, mutateRate)
         self.mutateRate = mutateRate
-        self.pos = pos
-        self.vel = vector.Vector(0, 0)
-        self.acc = vector.Vector(0, 0)
+        self.pos,self.vel,self.acc = pos,vector.Vector(0, 0),vector.Vector(0, 0)
 
     def getCoord(self):
         x = self.pos.getX()

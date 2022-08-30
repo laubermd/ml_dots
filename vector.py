@@ -1,10 +1,7 @@
 class Vector:
-    x = 0
-    y = 0
 
-    def __init__(self, x=x, y=x):
-        self.x = x
-        self.y = y
+    def __init__(self, x=0, y=0):
+        self.x,self.y = x,y
 
     def getX(self):
         return self.x

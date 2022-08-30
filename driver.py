@@ -4,10 +4,8 @@ import level
 import population
 
 root = tkinter.Tk()
-width = 500
-height = 500
-dotCount = 1000
-mutationRate = .01
+width,height = 500,500
+dotCount,mutationRate = 1000,.01
 showCheckpoints = False
 myCanvas = tkinter.Canvas(root, bg="white", height=height, width=width)
 myLevel = level.Level(Difficulty.MAZE, dotCount, width, height, mutationRate, showCheckpoints, myCanvas)

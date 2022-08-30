@@ -3,22 +3,14 @@ import vector
 import random
 
 class Population:
-    dots = []
     fitnessSum=0
     generation=1
     bestDot=0
     minStep=1000
     allDotsDead = False
-    width = 0
-    height = 0
-    mutateRate = .01
-    myCanvas=None
-    arcs=None
 
     def __init__(self, size, width, height, mutateRate, myCanvas):
-        self.width = width
-        self.height = height
-        self.mutateRate = mutateRate
+        self.width,self.height,self.mutateRate = width,height,mutateRate
         self.dots = [dot.Dot(vector.Vector(x=self.width/2, y=self.height-10), mutateRate) for _ in range(size)]
         self.myCanvas = myCanvas
         self.resetCanvas()

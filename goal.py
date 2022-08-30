@@ -1,10 +1,7 @@
 import vector
 
 class Goal:
-    pos = vector.Vector(x=0,y=0)
-    goalRadius = 3
-    limit = 5
-    fitness = 0
+    radius = 3
     bonus = 10000
 
     def __init__(self, x, y, myCanvas):
@@ -22,7 +19,7 @@ class Goal:
     def getCoord(self):
         x = self.pos.getX()
         y = self.pos.getY()
-        return x-self.goalRadius, y+self.goalRadius, x+self.goalRadius, y-self.goalRadius
+        return x-self.radius, y+self.radius, x+self.radius, y-self.radius
 
     def getPosition(self):
         return self.pos

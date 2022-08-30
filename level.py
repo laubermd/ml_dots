@@ -5,24 +5,12 @@ import obstacle
 import population
 
 class Level:
-    width = 0
-    height = 0
-    dotCount = 0
-    myCanvas=None
-    showCheckpoints = False
-    obstacles=[]
-    checkpoints=[]
-    population = population.Population(dotCount, width, height, .01, myCanvas)
-    difficulty = Difficulty.EASY
 
     def __init__(self, difficulty, dotCount, width, height, mutationRate, showCheckpoints, myCanvas):
-        self.width = width
-        self.height = height
-        self.myCanvas = myCanvas
-        self.difficulty = difficulty
-        self.dotCount = dotCount
-        self.showCheckpoints = showCheckpoints
-        self.population = population.Population(dotCount, width, height, mutationRate, myCanvas)
+        self.width,self.height = width,height
+        self.myCanvas,self.showCheckpoints = myCanvas,showCheckpoints
+        self.difficulty,self.dotCount = difficulty,dotCount
+        self.obstacles,self.checkpoints,self.population = [],[],population.Population(dotCount, width, height, mutationRate, myCanvas)
         self.resetCanvas()
         myCanvas.pack()
 

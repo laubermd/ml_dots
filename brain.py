@@ -3,14 +3,9 @@ import random
 import vector
 
 class Brain:
-    step = 0
-    size = 0
-    directions = []
-    mutateRate = .01
 
     def __init__(self, size, mutateRate, directions=[]):
-        self.size = size
-        self.mutateRate = mutateRate
+        self.step,self.size,self.mutateRate = 0,size,mutateRate
         if (directions):
             self.directions = directions.copy()
         else:
