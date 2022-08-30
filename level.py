@@ -32,7 +32,12 @@ class Level:
         ]
 
     def startHardLevel(self):
-        print("not implemented!")
+        self.obstacles = [
+            obstacle.Obstacle(150,397,350,402, self.myCanvas),
+            obstacle.Obstacle(150,97,350,102, self.myCanvas),
+            obstacle.Obstacle(10,247,200,252, self.myCanvas),
+            obstacle.Obstacle(300,247,490,252, self.myCanvas)
+        ]
 
     def checkCollision(self, dot):
         collision = False

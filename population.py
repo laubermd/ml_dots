@@ -34,9 +34,9 @@ class Population:
         return self.allDotsDead
 
     def calculateFitnessSum(self):
-        fitnessSum = 0
+        self.fitnessSum = 0
         for dot in self.dots:
-            fitnessSum += dot.getFitness()
+            self.fitnessSum += dot.getFitness()
 
     def setBestDot(self):
         topFitness = 0

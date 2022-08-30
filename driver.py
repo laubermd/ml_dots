@@ -1,4 +1,3 @@
-
 import tkinter
 import dot
 from difficulty import Difficulty
@@ -20,7 +19,7 @@ goalCoord = goalX-3, goalY+3, goalX+3, goalY-3
 myCanvas = tkinter.Canvas(root, bg="white", height=500, width=500)
 population = population.Population(dotCount, width, height, myCanvas)
 coord = population.getStartCoord()
-myLevel = level.Level(Difficulty.MEDIUM, myCanvas)
+myLevel = level.Level(Difficulty.HARD, myCanvas)
 
 # TODO move to a level object?
 def calculateFitness(dot):
@@ -83,4 +82,3 @@ resetCanvas()
 myCanvas.pack()
 do_one_frame()
 root.mainloop()
-
