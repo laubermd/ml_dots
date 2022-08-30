@@ -8,16 +8,18 @@ class Brain:
     size = 0
     directions = []
 
-    def __init__(self, size):
+    def __init__(self, size, directions=[]):
         self.size = size
-        self.directions = [self.getRandomStep() for _ in range(size)]
+        if (directions):
+            self.directions = directions.copy()
+        else:
+            self.directions = [self.getRandomStep() for _ in range(size)]
 
     def getRandomStep(self):
         randomAngle = random.randrange(628)/10 #approx 2PI
         # assume acc radius of 1
         accX = math.sin(randomAngle)
         accY = math.cos(randomAngle)
-
         return vector.Vector(x=accX, y=accY)
 
     def incrementStep(self):
@@ -28,3 +30,17 @@ class Brain:
 
     def getNextStep(self):
         return self.directions[self.step]
+
+    def getStepCount(self):
+        return self.step
+
+    def clone(self):
+        clonedBrain = Brain(self.size, self.directions.copy())
+        return clonedBrain
+
+    def mutate(self):
+        mutateRate = .01
+        for index in range(self.size):
+            rand = random.random()
+            if (mutateRate > rand):
+                self.directions[index] = self.getRandomStep()

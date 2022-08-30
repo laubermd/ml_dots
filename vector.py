@@ -5,7 +5,6 @@ class Vector:
     def __init__(self, x=x, y=x):
         self.x = x
         self.y = y
-        print("%f and %f" % (x, y))
 
     def getX(self):
         return self.x
@@ -13,10 +12,12 @@ class Vector:
     def getY(self):
         return self.y
 
-    def add(self, vel, limit=None):
+    def add(self, vel):
         self.x += vel.x
         self.y += vel.y
 
-        if limit:
-            self.x=min(self.x,limit)
-            self.y=min(self.y,limit)
+    def limit(self, limit):
+        self.x=min(self.x,limit)
+        self.y=min(self.y,limit)
+        self.x=max(self.x,limit*-1)
+        self.y=max(self.y,limit*-1)
