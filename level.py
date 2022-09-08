@@ -14,9 +14,23 @@ class Level:
         self.resetCanvas()
         myCanvas.pack()
 
+    def setDifficulty(self, difficulty):
+        self.difficulty = difficulty
+        self.myCanvas.delete("checkpoint")
+        self.myCanvas.delete("obstacle")
+        self.drawLevel()
+
     def resetCanvas(self):
         self.myCanvas.delete('all')
+        self.drawLevel()
+        self.goal.resetCanvas()
+        self.population.resetCanvas()
 
+    def resetBrains(self):
+        self.population.resetBrains()
+        self.resetCanvas()
+
+    def drawLevel(self):
         match self.difficulty:
             case Difficulty.EASY:
                 self.startEasyLevel()
@@ -26,6 +40,8 @@ class Level:
                 self.startHardLevel()
             case Difficulty.MAZE:
                 self.startMazeLevel()
+            case Difficulty.EZAM:
+                self.startEzamLevel()
         
         if self.showCheckpoints:
             for checkpoint in self.checkpoints:
@@ -33,9 +49,6 @@ class Level:
 
         for obstacle in self.obstacles:
             obstacle.resetCanvas()
-
-        self.goal.resetCanvas()
-        self.population.resetCanvas()
 
     def startEasyLevel(self):
         self.obstacles = []
@@ -85,6 +98,25 @@ class Level:
             checkpoint.Checkpoint(150,102,155,252,40,self.showCheckpoints,self.myCanvas),
             checkpoint.Checkpoint(345,97,350,252,50,self.showCheckpoints,self.myCanvas),
             checkpoint.Checkpoint(350,97,500,102,60,self.showCheckpoints,self.myCanvas)
+        ]
+
+        self.goal = goal.Goal(self.width/2,10,self.myCanvas)
+
+    def startEzamLevel(self):
+        self.obstacles = [
+            obstacle.Obstacle(150,397,500,402, self.myCanvas),
+            obstacle.Obstacle(0,247,350,252, self.myCanvas),
+            obstacle.Obstacle(150,97,350,102, self.myCanvas),
+            obstacle.Obstacle(345,0,350,102, self.myCanvas)
+        ]
+
+        self.checkpoints = [
+            checkpoint.Checkpoint(0,397,150,402,10,self.showCheckpoints,self.myCanvas),
+            checkpoint.Checkpoint(150,247,155,397,20,self.showCheckpoints,self.myCanvas),
+            checkpoint.Checkpoint(350,247,500,252,30,self.showCheckpoints,self.myCanvas),
+            checkpoint.Checkpoint(345,102,350,252,40,self.showCheckpoints,self.myCanvas),
+            checkpoint.Checkpoint(150,97,155,252,50,self.showCheckpoints,self.myCanvas),
+            checkpoint.Checkpoint(0,97,150,102,60,self.showCheckpoints,self.myCanvas)
         ]
 
         self.goal = goal.Goal(self.width/2,10,self.myCanvas)

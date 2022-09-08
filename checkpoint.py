@@ -1,13 +1,13 @@
 class Checkpoint:
 
     def __init__(self, x1, y1, x2, y2, bonus, showCheckpoint, myCanvas):
-        self.x1,self.y1,self.x2,self.y2,self.bonus = x1,y1,x2,y2,bonus
+        self.x1,self.y1,self.x2,self.y2,self.bonus,self.showCheckpoint = x1,y1,x2,y2,bonus,showCheckpoint
         self.myCanvas = myCanvas
         if showCheckpoint:
             self.resetCanvas()
 
     def resetCanvas(self):
-        self.rectangle = self.myCanvas.create_rectangle((self.x1, self.y1, self.x2, self.y2), fill="teal")
+        self.rectangle = self.myCanvas.create_rectangle((self.x1, self.y1, self.x2, self.y2), fill="teal", tags="checkpoint")
 
     def getBonus(self):
         return self.bonus

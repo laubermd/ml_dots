@@ -5,3 +5,4 @@ class Difficulty(Enum):
     MEDIUM = 1
     HARD = 2
     MAZE = 3
+    EZAM = 4

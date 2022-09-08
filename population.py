@@ -10,13 +10,16 @@ class Population:
     allDotsDead = False
 
     def __init__(self, size, width, height, mutateRate, myCanvas):
-        self.width,self.height,self.mutateRate = width,height,mutateRate
+        self.width,self.height,self.mutateRate,self.size = width,height,mutateRate,size
         self.dots = [dot.Dot(vector.Vector(x=self.width/2, y=self.height-10), mutateRate) for _ in range(size)]
         self.myCanvas = myCanvas
         self.resetCanvas()
 
     def getStartCoord(self):
         return self.dots[0].getCoord()
+
+    def resetBrains(self):
+        self.dots = [dot.Dot(vector.Vector(x=self.width/2, y=self.height-10), self.mutateRate) for _ in range(self.size)]
 
     def getDots(self):
         return self.dots

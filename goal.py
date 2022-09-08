@@ -2,7 +2,7 @@ import vector
 
 class Goal:
     radius = 3
-    bonus = 10000
+    bonus = 1000000
 
     def __init__(self, x, y, myCanvas):
         self.pos = vector.Vector(x,y)

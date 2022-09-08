@@ -6,7 +6,7 @@ class Obstacle:
         self.resetCanvas()
 
     def resetCanvas(self):
-        self.rectangle = self.myCanvas.create_rectangle((self.x1, self.y1, self.x2, self.y2), fill="blue")
+        self.rectangle = self.myCanvas.create_rectangle((self.x1, self.y1, self.x2, self.y2), fill="blue", tags="obstacle")
 
     def checkCollision(self, dot):
         pos = dot.getPosition()
