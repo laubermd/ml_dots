@@ -9,11 +9,11 @@ class Population:
     minStep=1000
     allDotsDead = False
 
-    def __init__(self, size, width, height, mutateRate, myCanvas):
+    def __init__(self, size, width, height, mutateRate, screen):
         self.width,self.height,self.mutateRate,self.size = width,height,mutateRate,size
-        self.dots = [dot.Dot(vector.Vector(x=self.width/2, y=self.height-10), mutateRate) for _ in range(size)]
-        self.myCanvas = myCanvas
-        self.resetCanvas()
+        self.dots = [dot.Dot(vector.Vector(x=self.width/2, y=self.height-10), mutateRate, screen) for _ in range(size)]
+        self.screen = screen
+        self.resetScreen()
 
     def getStartCoord(self):
         return self.dots[0].getCoord()
@@ -56,7 +56,7 @@ class Population:
         return None
 
     def naturalSelection(self):
-        newDots = [dot.Dot(vector.Vector(x=self.width/2, y=self.height-10), self.mutateRate) for _ in range(len(self.dots))]
+        newDots = [dot.Dot(vector.Vector(x=self.width/2, y=self.height-10), self.mutateRate, self.screen) for _ in range(len(self.dots))]
         self.setBestDot()
         self.calculateFitnessSum()
 
@@ -75,11 +75,13 @@ class Population:
             if not dot.isBestDot():
                 dot.mutate()
 
-    def resetCanvas(self):
-        dotColor = lambda dot : 'green' if dot.isBestDot() else 'black'
-        self.arcs = [self.myCanvas.create_arc(self.getStartCoord(), start=0, extent=359.9, fill=dotColor(self.dots[index])) for index in range(len(self.dots))]
+    def resetScreen(self):
+        # dotColor = lambda dot : 'green' if dot.isBestDot() else 'black'
+        # self.arcs = [self.myCanvas.create_arc(self.getStartCoord(), start=0, extent=359.9, fill=dotColor(self.dots[index])) for index in range(len(self.dots))]
+        for dot in self.dots:
+            dot.resetScreen()
 
     def move(self, dotIndex):
         self.dots[dotIndex].move()
-        vel = self.dots[dotIndex].getVelocity()
-        self.myCanvas.move(self.arcs[dotIndex], vel.getX(), vel.getY())
+        # vel = self.dots[dotIndex].getVelocity()
+        # self.myCanvas.move(self.arcs[dotIndex], vel.getX(), vel.getY())

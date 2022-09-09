@@ -1,15 +1,16 @@
+import pygame
 import vector
 
 class Goal:
     radius = 3
     bonus = 1000000
 
-    def __init__(self, x, y, myCanvas):
+    def __init__(self, x, y, screen):
         self.pos = vector.Vector(x,y)
-        self.myCanvas = myCanvas
+        self.screen = screen
 
-    def resetCanvas(self):
-        self.arc = self.myCanvas.create_arc(self.getCoord(), start=0, extent=359.9, fill="red")
+    def resetScreen(self):
+        pygame.draw.circle(self.screen, (255, 0, 0), [250,10], 4)
 
     def checkCollision(self, dot):
         dotPos = dot.getPosition()

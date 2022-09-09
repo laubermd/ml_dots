@@ -1,15 +1,18 @@
 import vector
 import brain
+import pygame
 
 class Dot:
     dotRadius,limit,fitness,bonus = 2,5,0,1
     alive,reachedGoal,isBest = True,False,False
+    radars = []
 
-    def __init__(self, pos, mutateRate, dotBrain=None):
+    def __init__(self, pos, mutateRate, screen, dotBrain=None):
         if dotBrain:
             self.dotBrain = dotBrain
         else:
             self.dotBrain=brain.Brain(1000, mutateRate)
+        self.screen = screen
         self.mutateRate = mutateRate
         self.pos,self.vel,self.acc = pos,vector.Vector(0, 0),vector.Vector(0, 0)
 
@@ -73,8 +76,20 @@ class Dot:
 
     def clone(self, pos):
         babyBrain = self.dotBrain.clone()
-        baby = Dot(pos, self.mutateRate, dotBrain=babyBrain)
+        baby = Dot(pos, self.mutateRate, self.screen, dotBrain=babyBrain)
         return baby
 
     def mutate(self):
         self.dotBrain.mutate()
+
+    # TODO init some radars
+    def getData(self):
+        radars = self.radars
+        ret = [0, 0, 0, 0]
+        for i, r in enumerate(radars):
+            ret[i] = int(r[1] / 30) # what does this calculate?
+
+        return ret
+
+    def resetScreen(self):
+        pygame.draw.circle(self.screen, (0, 0, 0), [self.pos.getX(),self.pos.getY()], 3)
