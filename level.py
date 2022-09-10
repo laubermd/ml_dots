@@ -1,6 +1,8 @@
 from difficulty import Difficulty
 import checkpoint
 import goal
+import vector
+import math
 import neat
 import obstacle
 import population
@@ -46,7 +48,8 @@ class Level:
         stats = neat.StatisticsReporter()
         self.p.add_reporter(stats)
         # self.p.run(self.movePopulation, self.size)
-        self.p.run(self.runDot, self.dotCount)
+        winner = self.p.run(self.runDot, 100)
+
 
 
 
@@ -57,14 +60,18 @@ class Level:
         self.genomes = genomes
 
         # TODO move to level/population
+        
+        self.population.reset()
+        self.population.setAllDotsDead(False)
         for id, g in genomes:
             net = neat.nn.FeedForwardNetwork.create(g, config)
+            dot = self.population.addDot()
+            self.checkCollision(dot)
             self.nets.append(net)
             g.fitness = 0
-
+        
         # Main loop
-        # generation += 1
-        while True:
+        while not self.population.areAllDotsDead():
             self.movePopulation()
 
 
@@ -80,11 +87,6 @@ class Level:
         self.drawLevel()
         self.goal.resetScreen()
         self.population.resetScreen()
-
-    def resetBrains(self):
-        self.population.resetBrains()
-        # TODO only reset dots on canvas
-        # self.resetCanvas()
 
     def drawLevel(self):
         match self.difficulty:
@@ -104,7 +106,7 @@ class Level:
                 checkpoint.resetCanvas()
 
         for obstacle in self.obstacles:
-            obstacle.resetCanvas()
+            obstacle.draw()
 
     def startEasyLevel(self):
         self.obstacles = []
@@ -112,16 +114,16 @@ class Level:
         self.goal = goal.Goal(self.width/2,10,self.screen)
 
     # TODO make obstacles relative to width/height
-    # def startMediumLevel(self):
-    #     self.obstacles = [
-    #         # obstacle.Obstacle(200,247,300,252, self.myCanvas)
-    #     ]
+    def startMediumLevel(self):
+        self.obstacles = [
+            obstacle.Obstacle(200,247,300,252, self.screen)
+        ]
 
-    #     self.checkpoints = [
-    #         # checkpoint.Checkpoint(0,247,500,252,5,self.showCheckpoints,self.myCanvas)
-    #     ]
+        self.checkpoints = [
+            # checkpoint.Checkpoint(0,247,500,252,5,self.showCheckpoints,self.myCanvas)
+        ]
 
-    #     # self.goal = goal.Goal(self.width/2,10,self.myCanvas)
+        self.goal = goal.Goal(self.width/2,10,self.screen)
 
     # def startHardLevel(self):
     #     self.obstacles = [
@@ -137,7 +139,7 @@ class Level:
     #         # checkpoint.Checkpoint(0,247,500,252,10,self.showCheckpoints,self.myCanvas)
     #     ]
 
-    #     # self.goal = goal.Goal(self.width/2,10,self.myCanvas)
+    #     self.goal = goal.Goal(self.width/2,10,self.screen)
 
     # def startMazeLevel(self):
     #     self.obstacles = [
@@ -156,7 +158,7 @@ class Level:
     #         # checkpoint.Checkpoint(350,97,500,102,60,self.showCheckpoints,self.myCanvas)
     #     ]
 
-    #     # self.goal = goal.Goal(self.width/2,10,self.myCanvas)
+    #     self.goal = goal.Goal(self.width/2,10,self.screen)
 
     # def startEzamLevel(self):
     #     self.obstacles = [
@@ -175,13 +177,13 @@ class Level:
     #         # checkpoint.Checkpoint(0,97,150,102,60,self.showCheckpoints,self.myCanvas)
     #     ]
 
-    #     # self.goal = goal.Goal(self.width/2,10,self.myCanvas)
+    #     self.goal = goal.Goal(self.width/2,10,self.screen)
 
     # TODO improve fitness scoring
     def calculateFitness(self, dot):
         fitness = 0
         if (dot.getReachedGoal()):
-            fitness = dot.getBonus()/(dot.getStepCount()**2)
+            fitness = dot.getBonus()/(dot.getStepCount())
         else:
             pos = dot.getPosition()
             goalPos = self.goal.getPosition()
@@ -217,44 +219,78 @@ class Level:
             dot.unalive()
             self.calculateFitness(dot)
 
+        radars = dot.getRadars()
+        radars.clear()
+        for angle in [0, 90, 180, 270]:
+            self.checkRadar(dot, angle)
+
+
+    def checkRadar(self, dot, angle):
+        len = 0
+        xPos = int(dot.getPosition().getX())
+        yPos = int(dot.getPosition().getY())
+
+        x=xPos
+        y=yPos
+        while not self.checkRadarCollision(x,y) and len < 30:
+            # extends radar line until white is detected
+            len = len + 1
+            x = int(xPos + math.cos(math.radians(360 - (angle))) * len)
+            y = int(yPos + math.sin(math.radians(360 - (angle))) * len)
+
+        dist = int(math.sqrt(math.pow(x - xPos, 2) + math.pow(y - yPos, 2)))
+        dot.addRadar([(x, y), dist])
+
+
+    def checkRadarCollision(self, xPos, yPos):
+        collision = False
+        radius = 0
+        collision = (xPos < radius or yPos < radius or 
+                    xPos > self.width - radius or 
+                    yPos > self.height - radius)
+
+        for obstacle in self.obstacles:
+            collision = collision or obstacle.checkRadarCollision(xPos,yPos)
+
+        return collision
+
+    def calculateReward(self, dot):
+        reward = 0
+        if (dot.getReachedGoal()):
+            reward = dot.getBonus()/(dot.getStepCount()**2)
+        else:
+            pos = dot.getPosition()
+            goalPos = self.goal.getPosition()
+            xDistance = goalPos.getX() - pos.getX()
+            yDistance = goalPos.getY() - pos.getY()
+            distanceSq = xDistance**2 + yDistance**2
+            # reward = dot.getBonus()/(distanceSq)
+            reward = 500 - math.sqrt(distanceSq)
+        return reward
+
     def movePopulation(self):
+        self.clock.tick(50)
         pygame.display.update()
         self.screen.fill((255,255,255))
         self.goal.resetScreen()
-        if self.population.areAllDotsDead():
-            self.population.naturalSelection()
-            self.population.setAllDotsDead(False)
-            self.population.mutateGeneration()
-            # self.resetCanvas()
-        else:
-            allDotsDead = True # trust, but verify
-            allDots = self.population.getDots()
+        self.drawLevel()
 
-            for index, dot in enumerate(allDots):
-                if dot.isAlive():
-                    allDotsDead = False
-
-                    print("index %i - len(nets) %i" % (index, len(self.nets)))
-                    output = self.nets[index].activate(dot.getData())
-                    i = output.index(max(output))
-                    print("output.index(max(output)) %i" % i)
-                    # TODO accelerate based on i
-                    # if i == 0:
-                    #     car.angle += 10
-                    # else:
-                    #     car.angle -= 10
-
-
-                    dot.move()
-                    pos = dot.getPosition()
-                    self.checkCollision(dot)
-
-
-                    # TODO update dot.checkRadar()
-                    self.calculateFitness(dot)
-                    self.genomes[i][1].fitness += dot.getFitness()
-                dot.resetScreen()
-            if (allDotsDead):
-                self.population.setAllDotsDead(True)
-
-        self.clock.tick(60)
+        allDotsDead = True # trust, but verify
+        allDots = self.population.getDots()
+        for index, dot in enumerate(allDots):
+            if dot.isAlive():
+                allDotsDead = False
+                netInput = dot.getData()
+                netInput[4]=self.goal.getPosition().getX()-dot.getPosition().getX()
+                netInput[5]=self.goal.getPosition().getY()-dot.getPosition().getY()
+                output = self.nets[index].activate(netInput)
+                step = vector.Vector(output[0],output[1])
+                
+                dot.move(step)
+                pos = dot.getPosition()
+                self.checkCollision(dot)
+                self.calculateFitness(dot)
+                self.genomes[index][1].fitness = self.calculateReward(dot)
+            dot.resetScreen()
+        if (allDotsDead):
+            self.population.setAllDotsDead(True)

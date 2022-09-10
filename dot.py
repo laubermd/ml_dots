@@ -1,20 +1,22 @@
 import vector
-import brain
+import math
 import pygame
 
 class Dot:
-    dotRadius,limit,fitness,bonus = 2,5,0,1
+    dotRadius,limit,fitness,bonus,stepCount = 2,5,0,1,0
     alive,reachedGoal,isBest = True,False,False
     radars = []
 
-    def __init__(self, pos, mutateRate, screen, dotBrain=None):
-        if dotBrain:
-            self.dotBrain = dotBrain
-        else:
-            self.dotBrain=brain.Brain(1000, mutateRate)
+    def __init__(self, pos, mutateRate, screen):
         self.screen = screen
         self.mutateRate = mutateRate
         self.pos,self.vel,self.acc = pos,vector.Vector(0, 0),vector.Vector(0, 0)
+
+    def addRadar(self, radar):
+        self.radars.append(radar)
+
+    def getRadars(self):
+        return self.radars
 
     def getCoord(self):
         x = self.pos.getX()
@@ -33,15 +35,14 @@ class Dot:
     def isAlive(self):
         return self.alive
 
-    def move(self):
-        if self.dotBrain.hasSteps():
-            step = self.dotBrain.getNextStep()
-            self.acc=step
-            self.vel.add(step)
-            self.vel.limit(self.limit)
-            self.pos.add(self.vel)
-            self.dotBrain.incrementStep()
-        else:
+    def move(self, step):
+        # TODO only move forward and/or turn
+        self.acc=step
+        self.vel.add(step)
+        self.vel.limit(self.limit)
+        self.pos.add(self.vel)
+        self.stepCount+=1
+        if self.stepCount > 200:
             self.unalive()
 
     def unalive(self):
@@ -54,7 +55,7 @@ class Dot:
         return self.reachedGoal
 
     def getStepCount(self):
-        return self.dotBrain.getStepCount()
+        return self.stepCount
 
     def setBonus(self, bonus):
         self.bonus = bonus
@@ -75,21 +76,27 @@ class Dot:
         return self.isBest
 
     def clone(self, pos):
-        babyBrain = self.dotBrain.clone()
-        baby = Dot(pos, self.mutateRate, self.screen, dotBrain=babyBrain)
-        return baby
-
-    def mutate(self):
-        self.dotBrain.mutate()
+        clone = Dot(pos, self.mutateRate, self.screen)
+        return clone
 
     # TODO init some radars
     def getData(self):
-        radars = self.radars
-        ret = [0, 0, 0, 0]
-        for i, r in enumerate(radars):
-            ret[i] = int(r[1] / 30) # what does this calculate?
+        data = [self.radars.copy()[0][1],
+                self.radars.copy()[1][1],
+                self.radars.copy()[2][1],
+                self.radars.copy()[3][1],
+                0,0
+        ]
+        return data
 
-        return ret
+    # TODO move to radar object
+    def drawRadar(self):
+        for r in self.radars:
+            pos, dist = r
+            pygame.draw.line(self.screen, (0, 255, 0), [self.pos.getX(),self.pos.getY()], pos, 1)
+            pygame.draw.circle(self.screen, (0, 255, 0), pos, 2)
 
     def resetScreen(self):
         pygame.draw.circle(self.screen, (0, 0, 0), [self.pos.getX(),self.pos.getY()], 3)
+        if (self.alive):
+            self.drawRadar()

@@ -11,9 +11,14 @@ class Population:
 
     def __init__(self, size, width, height, mutateRate, screen):
         self.width,self.height,self.mutateRate,self.size = width,height,mutateRate,size
-        self.dots = [dot.Dot(vector.Vector(x=self.width/2, y=self.height-10), mutateRate, screen) for _ in range(size)]
+        self.dots = []
         self.screen = screen
         self.resetScreen()
+
+    def addDot(self):
+        newDot = dot.Dot(vector.Vector(x=self.width/2, y=self.height-10), self.mutateRate, self.screen)
+        self.dots.append(newDot)
+        return newDot
 
     def getStartCoord(self):
         return self.dots[0].getCoord()
@@ -70,10 +75,28 @@ class Population:
         self.generation+=1
         self.dots = newDots.copy()
 
-    def mutateGeneration(self):
-        for dot in self.dots:
-            if not dot.isBestDot():
-                dot.mutate()
+    def reset(self):
+        self.dots = []
+        # # self.setBestDot()
+        # # self.calculateFitnessSum()
+
+        # newDots[len(newDots)-1] = self.dots[self.bestDot].clone(vector.Vector(x=self.width/2, y=self.height-10))
+        # newDots[len(newDots)-1].setBestDot(True)
+
+        # for index in range(0, len(newDots)-1):
+        #     parent = self.selectParent()
+        #     newDots[index] = parent.clone(vector.Vector(x=self.width/2, y=self.height-10))
+
+        self.generation+=1
+        # self.dots = newDots.copy()
+
+    def getGeneration(self):
+        return self.generation
+
+    # def mutateGeneration(self):
+    #     for dot in self.dots:
+    #         if not dot.isBestDot():
+    #             dot.mutate()
 
     def resetScreen(self):
         # dotColor = lambda dot : 'green' if dot.isBestDot() else 'black'
