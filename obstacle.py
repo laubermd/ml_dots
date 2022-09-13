@@ -8,7 +8,6 @@ class Obstacle:
         self.draw()
 
     def draw(self):
-        # self.rectangle = self.myCanvas.create_rectangle((self.x1, self.y1, self.x2, self.y2), fill="blue", tags="obstacle")
         pygame.draw.rect(self.screen, (0, 0, 255), pygame.Rect(self.x1, self.y1, self.x2-self.x1, self.y2-self.y1))
 
     def checkCollision(self, dot):

@@ -20,12 +20,6 @@ class Population:
         self.dots.append(newDot)
         return newDot
 
-    def getStartCoord(self):
-        return self.dots[0].getCoord()
-
-    def resetBrains(self):
-        self.dots = [dot.Dot(vector.Vector(x=self.width/2, y=self.height-10), self.mutateRate) for _ in range(self.size)]
-
     def getDots(self):
         return self.dots
 
@@ -34,11 +28,6 @@ class Population:
 
     def areAllDotsDead(self):
         return self.allDotsDead
-
-    def calculateFitnessSum(self):
-        self.fitnessSum = 0
-        for dot in self.dots:
-            self.fitnessSum += dot.getFitness()
 
     def setBestDot(self):
         topFitness = 0
@@ -60,21 +49,6 @@ class Population:
         print("error!!!!")
         return None
 
-    def naturalSelection(self):
-        newDots = [dot.Dot(vector.Vector(x=self.width/2, y=self.height-10), self.mutateRate, self.screen) for _ in range(len(self.dots))]
-        self.setBestDot()
-        self.calculateFitnessSum()
-
-        newDots[len(newDots)-1] = self.dots[self.bestDot].clone(vector.Vector(x=self.width/2, y=self.height-10))
-        newDots[len(newDots)-1].setBestDot(True)
-
-        for index in range(0, len(newDots)-1):
-            parent = self.selectParent()
-            newDots[index] = parent.clone(vector.Vector(x=self.width/2, y=self.height-10))
-
-        self.generation+=1
-        self.dots = newDots.copy()
-
     def reset(self):
         self.dots = []
         # # self.setBestDot()
@@ -93,18 +67,9 @@ class Population:
     def getGeneration(self):
         return self.generation
 
-    # def mutateGeneration(self):
-    #     for dot in self.dots:
-    #         if not dot.isBestDot():
-    #             dot.mutate()
-
     def resetScreen(self):
-        # dotColor = lambda dot : 'green' if dot.isBestDot() else 'black'
-        # self.arcs = [self.myCanvas.create_arc(self.getStartCoord(), start=0, extent=359.9, fill=dotColor(self.dots[index])) for index in range(len(self.dots))]
         for dot in self.dots:
             dot.resetScreen()
 
     def move(self, dotIndex):
         self.dots[dotIndex].move()
-        # vel = self.dots[dotIndex].getVelocity()
-        # self.myCanvas.move(self.arcs[dotIndex], vel.getX(), vel.getY())

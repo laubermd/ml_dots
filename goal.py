@@ -17,11 +17,6 @@ class Goal:
         return (abs(self.pos.getX()-dotPos.getX()) < 5 and 
                 abs(self.pos.getY()-dotPos.getY()) < 5)
 
-    def getCoord(self):
-        x = self.pos.getX()
-        y = self.pos.getY()
-        return x-self.radius, y+self.radius, x+self.radius, y-self.radius
-
     def getPosition(self):
         return self.pos
 

@@ -1,6 +1,7 @@
 from difficulty import Difficulty
 import checkpoint
 import goal
+import radar
 import vector
 import math
 import neat
@@ -38,7 +39,6 @@ class Level:
 
 
         self.resetScreen()
-        # self.myCanvas.pack()
 
 
 
@@ -78,12 +78,9 @@ class Level:
 
     def setDifficulty(self, difficulty):
         self.difficulty = difficulty
-        # self.myCanvas.delete("checkpoint")
-        # self.myCanvas.delete("obstacle")
         self.drawLevel()
 
     def resetScreen(self):
-        # self.myCanvas.delete('all')
         self.drawLevel()
         self.goal.resetScreen()
         self.population.resetScreen()
@@ -103,7 +100,7 @@ class Level:
         
         if self.showCheckpoints:
             for checkpoint in self.checkpoints:
-                checkpoint.resetCanvas()
+                checkpoint.draw()
 
         for obstacle in self.obstacles:
             obstacle.draw()
@@ -120,78 +117,68 @@ class Level:
         ]
 
         self.checkpoints = [
-            # checkpoint.Checkpoint(0,247,500,252,5,self.showCheckpoints,self.myCanvas)
+            checkpoint.Checkpoint(0,247,500,252,5,self.showCheckpoints,self.screen)
         ]
 
         self.goal = goal.Goal(self.width/2,10,self.screen)
 
-    # def startHardLevel(self):
-    #     self.obstacles = [
-    #         # obstacle.Obstacle(150,397,350,402, self.myCanvas),
-    #         # obstacle.Obstacle(150,97,350,102, self.myCanvas),
-    #         # obstacle.Obstacle(25,247,200,252, self.myCanvas),
-    #         # obstacle.Obstacle(300,247,475,252, self.myCanvas)
-    #     ]
+    def startHardLevel(self):
+        self.obstacles = [
+            obstacle.Obstacle(150,397,350,402, self.screen),
+            obstacle.Obstacle(150,97,350,102, self.screen),
+            obstacle.Obstacle(25,247,200,252, self.screen),
+            obstacle.Obstacle(300,247,475,252, self.screen)
+        ]
 
-    #     self.checkpoints = [
-    #         # checkpoint.Checkpoint(0,397,500,402,5,self.showCheckpoints,self.myCanvas),
-    #         # checkpoint.Checkpoint(0,97,500,102,15,self.showCheckpoints,self.myCanvas),
-    #         # checkpoint.Checkpoint(0,247,500,252,10,self.showCheckpoints,self.myCanvas)
-    #     ]
+        self.checkpoints = [
+            checkpoint.Checkpoint(0,397,150,402,5,self.showCheckpoints,self.screen),
+            checkpoint.Checkpoint(350,397,500,402,5,self.showCheckpoints,self.screen),
+            checkpoint.Checkpoint(0,247,25,252,10,self.showCheckpoints,self.screen),
+            checkpoint.Checkpoint(200,247,300,252,10,self.showCheckpoints,self.screen),
+            checkpoint.Checkpoint(475,247,500,252,10,self.showCheckpoints,self.screen),
+            checkpoint.Checkpoint(0,97,150,102,15,self.showCheckpoints,self.screen),
+            checkpoint.Checkpoint(350,97,500,102,15,self.showCheckpoints,self.screen)
+        ]
 
-    #     self.goal = goal.Goal(self.width/2,10,self.screen)
+        self.goal = goal.Goal(self.width/2,10,self.screen)
 
-    # def startMazeLevel(self):
-    #     self.obstacles = [
-    #         # obstacle.Obstacle(0,397,350,402, self.myCanvas),
-    #         # obstacle.Obstacle(150,247,500,252, self.myCanvas),
-    #         # obstacle.Obstacle(150,97,350,102, self.myCanvas),
-    #         # obstacle.Obstacle(150,0,155,102, self.myCanvas)
-    #     ]
+    def startMazeLevel(self):
+        self.obstacles = [
+            obstacle.Obstacle(0,397,350,402, self.screen),
+            obstacle.Obstacle(150,247,500,252, self.screen),
+            obstacle.Obstacle(150,97,350,102, self.screen),
+            obstacle.Obstacle(150,0,155,102, self.screen)
+        ]
 
-    #     self.checkpoints = [
-    #         # checkpoint.Checkpoint(350,397,500,402,10,self.showCheckpoints,self.myCanvas),
-    #         # checkpoint.Checkpoint(345,247,350,397,20,self.showCheckpoints,self.myCanvas),
-    #         # checkpoint.Checkpoint(0,247,150,252,30,self.showCheckpoints,self.myCanvas),
-    #         # checkpoint.Checkpoint(150,102,155,252,40,self.showCheckpoints,self.myCanvas),
-    #         # checkpoint.Checkpoint(345,97,350,252,50,self.showCheckpoints,self.myCanvas),
-    #         # checkpoint.Checkpoint(350,97,500,102,60,self.showCheckpoints,self.myCanvas)
-    #     ]
+        self.checkpoints = [
+            checkpoint.Checkpoint(350,397,500,402,10,self.showCheckpoints,self.screen),
+            checkpoint.Checkpoint(345,247,350,397,20,self.showCheckpoints,self.screen),
+            checkpoint.Checkpoint(0,247,150,252,30,self.showCheckpoints,self.screen),
+            checkpoint.Checkpoint(150,102,155,252,40,self.showCheckpoints,self.screen),
+            checkpoint.Checkpoint(345,97,350,252,50,self.showCheckpoints,self.screen),
+            checkpoint.Checkpoint(350,97,500,102,60,self.showCheckpoints,self.screen)
+        ]
 
-    #     self.goal = goal.Goal(self.width/2,10,self.screen)
+        self.goal = goal.Goal(self.width/2,10,self.screen)
 
-    # def startEzamLevel(self):
-    #     self.obstacles = [
-    #         # obstacle.Obstacle(150,397,500,402, self.myCanvas),
-    #         # obstacle.Obstacle(0,247,350,252, self.myCanvas),
-    #         # obstacle.Obstacle(150,97,350,102, self.myCanvas),
-    #         # obstacle.Obstacle(345,0,350,102, self.myCanvas)
-    #     ]
+    def startEzamLevel(self):
+        self.obstacles = [
+            obstacle.Obstacle(150,397,500,402, self.screen),
+            obstacle.Obstacle(0,247,350,252, self.screen),
+            obstacle.Obstacle(150,97,350,102, self.screen),
+            obstacle.Obstacle(345,0,350,102, self.screen)
+        ]
 
-    #     self.checkpoints = [
-    #         # checkpoint.Checkpoint(0,397,150,402,10,self.showCheckpoints,self.myCanvas),
-    #         # checkpoint.Checkpoint(150,247,155,397,20,self.showCheckpoints,self.myCanvas),
-    #         # checkpoint.Checkpoint(350,247,500,252,30,self.showCheckpoints,self.myCanvas),
-    #         # checkpoint.Checkpoint(345,102,350,252,40,self.showCheckpoints,self.myCanvas),
-    #         # checkpoint.Checkpoint(150,97,155,252,50,self.showCheckpoints,self.myCanvas),
-    #         # checkpoint.Checkpoint(0,97,150,102,60,self.showCheckpoints,self.myCanvas)
-    #     ]
+        self.checkpoints = [
+            checkpoint.Checkpoint(0,397,150,402,10,self.showCheckpoints,self.screen),
+            checkpoint.Checkpoint(150,247,155,397,20,self.showCheckpoints,self.screen),
+            checkpoint.Checkpoint(350,247,500,252,30,self.showCheckpoints,self.screen),
+            checkpoint.Checkpoint(345,102,350,252,40,self.showCheckpoints,self.screen),
+            checkpoint.Checkpoint(150,97,155,252,50,self.showCheckpoints,self.screen),
+            checkpoint.Checkpoint(0,97,150,102,60,self.showCheckpoints,self.screen)
+        ]
 
-    #     self.goal = goal.Goal(self.width/2,10,self.screen)
-
-    # TODO improve fitness scoring
-    def calculateFitness(self, dot):
-        fitness = 0
-        if (dot.getReachedGoal()):
-            fitness = dot.getBonus()/(dot.getStepCount())
-        else:
-            pos = dot.getPosition()
-            goalPos = self.goal.getPosition()
-            xDistance = goalPos.getX() - pos.getX()
-            yDistance = goalPos.getY() - pos.getY()
-            distanceSq = xDistance**2 + yDistance**2
-            fitness = dot.getBonus()/distanceSq
-        dot.setFitness(fitness)
+        self.goal = goal.Goal(self.width/2,10,self.screen)
 
     def checkCollision(self, dot):
         collision = False
@@ -217,15 +204,13 @@ class Level:
 
         if collision:
             dot.unalive()
-            self.calculateFitness(dot)
 
         radars = dot.getRadars()
-        radars.clear()
-        for angle in [0, 90, 180, 270]:
-            self.checkRadar(dot, angle)
+        for myRadar in dot.getRadars():
+            self.checkRadar(dot, myRadar)
 
-
-    def checkRadar(self, dot, angle):
+    # TODO move some logic to radar object
+    def checkRadar(self, dot, myRadar):
         len = 0
         xPos = int(dot.getPosition().getX())
         yPos = int(dot.getPosition().getY())
@@ -235,12 +220,14 @@ class Level:
         while not self.checkRadarCollision(x,y) and len < 30:
             # extends radar line until white is detected
             len = len + 1
-            x = int(xPos + math.cos(math.radians(360 - (angle))) * len)
-            y = int(yPos + math.sin(math.radians(360 - (angle))) * len)
+            x = int(xPos + math.cos(math.radians(360 - (myRadar.getAngle()))) * len)
+            y = int(yPos + math.sin(math.radians(360 - (myRadar.getAngle()))) * len)
 
+        pos = vector.Vector(x,y)
         dist = int(math.sqrt(math.pow(x - xPos, 2) + math.pow(y - yPos, 2)))
-        dot.addRadar([(x, y), dist])
-
+        myRadar.setCenter(dot.getPosition())
+        myRadar.setDist(dist)
+        myRadar.setPosition(pos)
 
     def checkRadarCollision(self, xPos, yPos):
         collision = False
@@ -257,15 +244,14 @@ class Level:
     def calculateReward(self, dot):
         reward = 0
         if (dot.getReachedGoal()):
-            reward = dot.getBonus()/(dot.getStepCount()**2)
+            reward = dot.getBonus()/(dot.getStepCount())
         else:
             pos = dot.getPosition()
             goalPos = self.goal.getPosition()
             xDistance = goalPos.getX() - pos.getX()
             yDistance = goalPos.getY() - pos.getY()
             distanceSq = xDistance**2 + yDistance**2
-            # reward = dot.getBonus()/(distanceSq)
-            reward = 500 - math.sqrt(distanceSq)
+            reward = 500 - math.sqrt(distanceSq) + dot.getBonus()
         return reward
 
     def movePopulation(self):
@@ -289,7 +275,6 @@ class Level:
                 dot.move(step)
                 pos = dot.getPosition()
                 self.checkCollision(dot)
-                self.calculateFitness(dot)
                 self.genomes[index][1].fitness = self.calculateReward(dot)
             dot.resetScreen()
         if (allDotsDead):
