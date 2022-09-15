@@ -5,11 +5,11 @@ class Checkpoint:
     def __init__(self, x1, y1, x2, y2, bonus, showCheckpoint, screen):
         self.x1,self.y1,self.x2,self.y2,self.bonus,self.showCheckpoint = x1,y1,x2,y2,bonus,showCheckpoint
         self.screen = screen
-        if showCheckpoint:
-            self.draw()
+        self.draw()
 
     def draw(self):
-        pygame.draw.rect(self.screen, (0, 255, 255), pygame.Rect(self.x1, self.y1, self.x2-self.x1, self.y2-self.y1))
+        if self.showCheckpoint:
+            pygame.draw.rect(self.screen, (0, 255, 255), pygame.Rect(self.x1, self.y1, self.x2-self.x1, self.y2-self.y1))
 
     def getBonus(self):
         return self.bonus

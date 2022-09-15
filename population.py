@@ -9,14 +9,14 @@ class Population:
     minStep=1000
     allDotsDead = False
 
-    def __init__(self, size, width, height, mutateRate, screen):
-        self.width,self.height,self.mutateRate,self.size = width,height,mutateRate,size
+    def __init__(self, size, width, height, screen):
+        self.width,self.height,self.size = width,height,size
         self.dots = []
         self.screen = screen
         self.resetScreen()
 
     def addDot(self):
-        newDot = dot.Dot(vector.Vector(x=self.width/2, y=self.height-10), self.mutateRate, self.screen)
+        newDot = dot.Dot(vector.Vector(x=self.width/2, y=self.height-10), self.screen)
         self.dots.append(newDot)
         return newDot
 
@@ -51,6 +51,7 @@ class Population:
 
     def reset(self):
         self.dots = []
+        self.allDotsDead = False
         # # self.setBestDot()
         # # self.calculateFitnessSum()
 

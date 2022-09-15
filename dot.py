@@ -7,9 +7,8 @@ class Dot:
     dotRadius,limit,fitness,bonus,stepCount = 2,5,0,1,0
     alive,reachedGoal,isBest = True,False,False
 
-    def __init__(self, pos, mutateRate, screen):
+    def __init__(self, pos, screen):
         self.screen = screen
-        self.mutateRate = mutateRate
         self.pos,self.vel,self.acc = pos,vector.Vector(0, 0),vector.Vector(0, 0)
         self.radars = [
             radar.Radar(self.pos, 30, 0, self.screen),
@@ -74,10 +73,10 @@ class Dot:
         return clone
 
     def getData(self):
-        data = [self.radars[0].isClose(),
-                self.radars[1].isClose(),
-                self.radars[2].isClose(),
-                self.radars[3].isClose(),
+        data = [self.radars[0].getDist(),
+                self.radars[1].getDist(),
+                self.radars[2].getDist(),
+                self.radars[3].getDist(),
                 0,0
         ]
         return data

@@ -9,7 +9,7 @@ class Goal:
         self.pos = vector.Vector(x,y)
         self.screen = screen
 
-    def resetScreen(self):
+    def draw(self):
         pygame.draw.circle(self.screen, (255, 0, 0), [250,10], 4)
 
     def checkCollision(self, dot):
